@@ -14,3 +14,8 @@ switch (inspect) {
 	default:
 		result: "unknown";
 }
+// Many way to convert String to Number
+var year = "2018";
+parseInt(year);
++year;
+Number(year);
