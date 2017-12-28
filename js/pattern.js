@@ -65,6 +65,17 @@ try {
 	console.error(`Error: ${e.name} : ${e.message}`);
 }
 // Immediately function
-(function () {
+(function() {
 	console.log('Function is on');
 })();
+// Resusable Code Import, Export;
+// Bind .bind(this) // SELF, THAT;
+var addThis = function(a, c, u) {
+		return this.num + a + c + u;
+	},
+	obj = {
+		num: 1
+	},
+	bound = addThis.bind(obj);
+
+console.log('Bind Function:', bound(19, 20, 67));
