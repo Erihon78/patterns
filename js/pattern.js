@@ -1,5 +1,8 @@
 "use strict";
 // Underscore private method
+// Use your code for good
+const getWordsCount = text =>
+	text ? text.trim().split(/\s+/).length : 0
 // console.log('It\'s Works!')
 // CASE SWITCH
 // Make many if more Simple
@@ -304,5 +307,136 @@ module.facade({
 	val: 10
 });
 // Factory
+// A Factory Method creates new objects as instructed by the client. 
+class Employee {
+	create(type) {
+		let employee;
+		
+		if (type === 'fulltime') {
+			employee = new FullTime();
+		} else if (type === 'parttime') {
+			employee = new PartTime();
+		} else if (type === 'temporary') {
+			employee = new Temporary();
+		} else if (type === 'contractor') {
+			employee = new Contractor();
+		}
+		
+		employee.type = type;
+		employee.say = function() {
+			console.log(`${this.type}: rate ${this.rate}/hour`);
+		};
+		return employee;
+	}
+}
+
+class Fulltime {
+	constructor() {
+		this.rate = '$12'
+	}
+}
+
+class PartTime {
+	constructor() {
+		this.rate = '$11'
+	}
+}
+
+class Temporary {
+	constructor() {
+		this.rate = '$10'
+	}
+}
+
+class Contractor {
+	constructor() {
+		this.rate = '$15'
+	}
+}
+const factory = new Employee();
+fulltime = factory.create('fulltime');
+parttime = factory.create('parttime');
+temporary = factory.create('temporary');
+contractor = factory.create('contractor');
+
+fulltime.say();
+parttime.say();
+temporary.say();
+contractor.say();
 // Observer
+// The Observer pattern offers a subscription model in which objects 
+// subscribe to an event and get notified when the event occurs. 
+function ObserverList() {
+	this.observerList = [];
+}
+
+ObserverList.prototype.add = function(obj) {
+	return this.observerList.push(obj);
+};
+
+ObserverList.prototype.count = function() {
+	return this.observerList.length;
+};
+
+ObserverList.prototype.get = function(index) {
+	if (index > -1 && index < this.observerList.length) {
+		return this.observerList[index];
+	}
+};
+
+ObserverList.prototype.indexOf = function(obj, startIndex) {
+	var i = startIndex;
+
+	while (i < this.observerList.length) {
+		if (this.observerList[i] === obj) {
+			return i;
+		}
+		i++;
+	}
+
+	return -1;
+};
+
+ObserverList.prototype.removeAt = function(index) {
+	this.observerList.splice(index, 1);
+};
 // Mediator
+// The Mediator pattern provides central authority over a group of 
+// objects by encapsulating how these objects interact. 
+var mediator = (function() {
+	var subscribe = function(channel, fn) {
+			if (!mediator.channels[channel]) mediator.channels[channel] = [];
+			mediator.channels[channel].push({
+				context: this,
+				callback: fn
+			});
+			return this;
+		},
+		publish = function(channel) {
+			if (!mediator.channels[channel]) return false;
+			var args = Array.prototype.slice.call(arguments, 1);
+			for (var i = 0, l = mediator.channels[channel].length; i < l; i++) {
+				var subscription = mediator.channels[channel][i];
+				subscription.callback.apply(subscription.context, args);
+			}
+			return this;
+		};
+
+	return {
+		channels: {},
+		publish: publish,
+		subscribe: subscribe,
+		installTo: function(obj) {
+			obj.subscribe = subscribe;
+			obj.publish = publish;
+		}
+	};
+
+}());
+
+mediator.name = "tim";
+mediator.subscribe('nameChange', function(arg) {
+	console.log(this.name);
+	this.name = arg;
+	console.log(this.name);
+});
