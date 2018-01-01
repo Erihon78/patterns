@@ -183,10 +183,126 @@ Engraving(mb);
 Insurance(mb);
 console.log(mb.cost()); //1522
 console.log(mb.screenSize()); //13.3
-//
 // Proxy Object
+// The Proxy pattern provides a surrogate or placeholder object 
+// for another object and controls access to this other object.
+// ES6 Proxy
+// var handler = {
+// 	get: function(target, name) {
+// 		if (name in target) {
+// 			return target[name];
+// 		} else {
+// 			return target;
+// 		}
+// 	}
+// };
+
+// var p = new Proxy({}, handler);
+// p.foo = 'bar';
+// p.bar = 'baz';
+// console.log(p.foo, p.foo.baz);
+function GeoCoder() {
+	this.getLatLng = function(address) {
+		if (address === "Amsterdam") {
+			return "52.3700° N, 4.8900° E";
+		} else if (address === "London") {
+			return "51.5171° N, 0.1062° W";
+		} else if (address === "Paris") {
+			return "48.8742° N, 2.3470° E";
+		} else if (address === "Berlin") {
+			return "52.5233° N, 13.4127° E";
+		} else {
+			return "";
+		}
+	};
+}
+
+function GeoProxy() {
+	var geocoder = new GeoCoder();
+	var geocache = {};
+
+	return {
+		getLatLng: function(address) {
+			if (!geocache[address]) {
+				geocache[address] = geocoder.getLatLng(address);
+			}
+			log.add(address + ": " + geocache[address]);
+			return geocache[address];
+		},
+		getCount: function() {
+			var count = 0;
+			for (var code in geocache) {
+				count++;
+			}
+			return count;
+		}
+	};
+};
 // Strategy
-// Facade
+// The Strategy pattern encapsulates alternative 
+// algorithms (or strategies) for a particular task. 
+var Greeter = function(strategy) {
+	this.strategy = strategy;
+};
+
+Greeter.prototype.greet = function() {
+	return this.strategy();
+};
+
+// Strategy 1
+var politeGreetingStrategy = function() {
+	console.log("Hello.");
+};
+// Strategy 2
+var friendlyGreetingStrategy = function() {
+	console.log("Hey!");
+};
+// Strategy 3 
+var boredGreetingStrategy = function() {
+	console.log("sup.");
+};
+
+politeGreeter.greet(); //=> Hello.
+friendlyGreeter.greet(); //=> Hey!
+boredGreeter.greet(); //=> sup.
+// Давайте используем их!
+var politeGreeter = new Greeter(politeGreetingStrategy);
+var friendlyGreeter = new Greeter(friendlyGreetingStrategy);
+var boredGreeter = new Greeter(boredGreetingStrategy);
+// Façade
+// The Façade pattern provides an interface 
+// which shields clients from complex functionality in one or more subsystems
+var module = (function() {
+	var _private = {
+		i: 5,
+		get: function() {
+			console.log(this.i);
+		},
+		set: function(val) {
+			this.i = val;
+		},
+		run: function() {
+			console.log('Running');
+		},
+		jump: function() {
+			console.log('Changing');
+		}
+	};
+	return {
+		facade: function(args) {
+			_private.set(args.val);
+			_private.get();
+			if (args.run) {
+				_private.run();
+			}
+		}
+	}
+}());
+
+module.facade({
+	run: true,
+	val: 10
+});
 // Factory
 // Observer
 // Mediator
