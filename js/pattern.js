@@ -1,4 +1,5 @@
 "use strict";
+// Underscore private method
 // console.log('It\'s Works!')
 // CASE SWITCH
 // Make many if more Simple
@@ -68,7 +69,7 @@ try {
 (function() {
 	console.log('Function is on');
 })();
-// Resusable Code Import, Export;
+// Reusable Code Import, Export;
 // Bind .bind(this) // SELF, THAT;
 var addThis = function(a, c, u) {
 		return this.num + a + c + u;
@@ -79,3 +80,113 @@ var addThis = function(a, c, u) {
 	bound = addThis.bind(obj);
 
 console.log('Bind Function:', bound(19, 20, 67));
+// Singelton
+// The Singleton Pattern limits the number of 
+// instances of a particular object to just one. This single instance is called the singleton.
+var counterModule = (function() {
+	var instance,
+		counter = 0;
+
+	var getCounter = function() {
+		return counter;
+	}
+
+	var increaseCounter = function() {
+		counter++;
+	}
+
+	var createInstance = function() {
+		return {
+			getCounter: getCounter,
+			increaseCounter: increaseCounter
+		}
+	}
+
+	return {
+		getInstance: function() {
+			return instance || (instance = createInstance());
+		}
+	}
+})();
+// Iterator
+// The Iterator pattern allows clients to effectively loop over a collection of objects
+var element;
+var agg = (function() {
+	var index = 0,
+		data = [1, 2, 3, 4, 5],
+		length = data.length;
+
+	return {
+		next: function() {
+			var element;
+			if (!this.hasNext()) {
+				return null;
+			}
+			element = data[index];
+			index = index + 2;
+			return element;
+		},
+		hasNext: function() {
+			return index < length;
+		},
+		rewind: function() {
+			index = 0;
+		},
+		current: function() {
+			return data[index];
+		}
+	};
+}());
+// agg provides us with an api containing next(), hasNext(), current() and rewind()
+//   private data is hidden behind our api via the module pattern
+
+while (agg.hasNext()) {
+	console.log('Next:', agg.next());
+}
+agg.rewind();
+console.log('Current:', agg.current());
+// Decorator
+// The Decorator pattern extends (decorates) an object’s behavior dynamically.
+function MacBook() {
+	this.cost = function() {
+		return 997;
+	};
+	this.screenSize = function() {
+		return 13.3;
+	};
+}
+// Decorator 1
+function Memory(macbook) {
+	var v = macbook.cost();
+	macbook.cost = function() {
+		return v + 75;
+	}
+}
+// Decorator 2
+function Engraving(macbook) {
+	var v = macbook.cost();
+	macbook.cost = function() {
+		return v + 200;
+	};
+}
+
+// Decorator 3
+function Insurance(macbook) {
+	var v = macbook.cost();
+	macbook.cost = function() {
+		return v + 250;
+	};
+}
+var mb = new MacBook();
+Memory(mb);
+Engraving(mb);
+Insurance(mb);
+console.log(mb.cost()); //1522
+console.log(mb.screenSize()); //13.3
+//
+// Proxy Object
+// Strategy
+// Facade
+// Factory
+// Observer
+// Mediator
